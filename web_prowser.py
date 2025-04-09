@@ -146,10 +146,6 @@ class Layout:
         self.weight   , self.style    = "normal", "roman";
         for tok in tokens:
             self.Token(tok);
-
-
-       
-
     def Token(self,tok):
             if isinstance(tok , Text):
                for word in tok.text.split():
@@ -160,14 +156,15 @@ class Layout:
                                             )
                                    
                   w=font.measure(word);
-
-                  self.cursor_x += w + font.measure(" ");
+            
+                  if self.cursor_x + w > WIDTH - HSTEP:
+                        self.cursor_y += font.metrics("linespace") *1.5 ;
+                        self.cursor_x = HSTEP
                   wrd_tpl = (self.cursor_x,self.cursor_y,word,font)
                   self.display_list.append(wrd_tpl);
-                  if self.cursor_x + w > WIDTH - HSTEP:
-                        print("entered");
-                        self.cursor_y += font.metrics("linespace") * 1.25;
-                        self.cursor_x = HSTEP
+                  self.cursor_x += w + font.measure(" ");
+
+
             elif tok.tag == "i":
                  style = "italic";
             elif tok.tag == "b":
