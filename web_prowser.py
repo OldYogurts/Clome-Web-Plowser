@@ -113,10 +113,12 @@ class Browser:
 
         if url.scheme not in ["data","file"]:
             body = url.request()
-            if url.view_src == 0:
+        if url.view_src == 0:
                 print("Connected")
                 tokens = lex(body)
-            elif url.view_src ==1:
+        
+
+        elif url.view_src ==1:
                 print("view page source")
                 text=view_source(body)
         elif url.scheme == "data":
@@ -125,11 +127,10 @@ class Browser:
                 text = url.text
                 text = text.replace("&lt;","<")
                 text = text.replace("&gt;",">")
-        
         self.display_list = Layout(tokens).display_list;
         self.draw();
 
-# *** TEXT FONTS AND TYPES MANAGER CLASSES***
+# *** TEXT ONTS AND TYPES MANAGER CLASSES***
 
 WIDTH,HEIGHT = 800,600;
 HSTEP , VSTEP = 13,18
@@ -146,29 +147,27 @@ class Layout:
         for tok in tokens:
             self.Token(tok);
 
-    def Word(self,word):
-             font = tkinter.font.Font(
-                                  size=16,
-                                  weight=self.weight,
-                                  slant=self.style
-                                  )
-                         
-             w=font.measure(word);
 
-             word_tuple = (self.cursor_x,self.cursor_y,word,font)
-             if self.cursor_x + w > WIDTH - HSTEP:
-                 self.ursor_x=HSTEP;
-                 self.cursor_y= font.metrics("linespace")*1.25;
-                 self.cursor_x += w + font.measure(" ");
-                 if '\n' in word:
-                         self.cursor_y += VSTEP+w
-
-             return word_tuple
+       
 
     def Token(self,tok):
             if isinstance(tok , Text):
-               for wrd in tok.text.split():
-                   self.display_list.append(self.Word(wrd))
+               for word in tok.text.split():
+                  font = tkinter.font.Font(
+                                            size=16,
+                                            weight=self.weight,
+                                            slant=self.style
+                                            )
+                                   
+                  w=font.measure(word);
+
+                  self.cursor_x += w + font.measure(" ");
+                  wrd_tpl = (self.cursor_x,self.cursor_y,word,font)
+                  self.display_list.append(wrd_tpl);
+                  if self.cursor_x + w > WIDTH - HSTEP:
+                        print("entered");
+                        self.cursor_y += font.metrics("linespace") * 1.25;
+                        self.cursor_x = HSTEP
             elif tok.tag == "i":
                  style = "italic";
             elif tok.tag == "b":
@@ -177,8 +176,8 @@ class Layout:
                  style = "roman";
             elif tok.tag == "/b":
                  weight = "normal"
-            
             return self.display_list;
+
 
 class Text:
     def __init__(self,text):
@@ -197,14 +196,14 @@ def lex(body):
             if c == "<": 
                 in_tag = True 
                 if buffer :out.append(Text(buffer));
-                buffer = " "
+                buffer = ""
             elif c == ">":
                 in_tag = False
                 out.append(Tag(buffer));
                 buffer = "";   
             else:
                 buffer +=c
-            if not in_tag and buffer:
+    if not in_tag and buffer:
                 out.append(Text(buffer));
     return out;
 #HELPER METHODS:
