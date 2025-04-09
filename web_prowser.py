@@ -143,14 +143,14 @@ class Layout:
         self.display_list =[]
         
         self.cursor_x , self.cursor_y = HSTEP,VSTEP;
-        self.weight   , self.style    = "normal", "roman";
+        self.size , self.weight   , self.style    = 16 ,"normal", "roman";
         for tok in tokens:
             self.Token(tok);
     def Token(self,tok):
             if isinstance(tok , Text):
                for word in tok.text.split():
                   font = tkinter.font.Font(
-                                            size=16,
+                                            size=self.size,
                                             weight=self.weight,
                                             slant=self.style
                                             )
