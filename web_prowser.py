@@ -176,12 +176,12 @@ class Layout:
             return self.display_list;
 
 
+@dataclass
 class Text:
-    def __init__(self,text):
-        self.text=text;
+    text : str;
+@dataclass
 class Tag:
-    def __init__(self,tag):
-        self.tag=tag;
+    tag : str;
 #LEX METHOD
 def lex(body):
 
